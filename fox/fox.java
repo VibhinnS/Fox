@@ -1,6 +1,5 @@
 package fox;
 
-import fox.Token;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -8,7 +7,6 @@ import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
-import java.util.Scanner;
 
 public class Fox {
     static boolean hadError = false;
@@ -51,11 +49,11 @@ public class Fox {
     }
 
     static void error(int line, String message) {
-        report(line, "", message);
+        report(line, message);
     }
 
-    private static void report(int line, String where, String message) {
-        System.out.println("[line " + line + "] Error" + where + ": " + message);
+    private static void report(int line, String message) {
+        System.out.println("[line " + line + "] Error" + ": " + message);
         hadError = true;
     }
 }
