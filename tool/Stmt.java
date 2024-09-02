@@ -1,4 +1,7 @@
-package fox;
+package tool;
+
+import fox.Expr;
+import fox.Token;
 
 import java.util.List;
 
@@ -128,7 +131,7 @@ abstract class Stmt {
             return visitor.visitWhileStmt(this);
         }
 
-        final Expr condition;
+        final fox.Expr condition;
         final Stmt body;
     }
 

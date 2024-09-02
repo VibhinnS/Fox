@@ -51,7 +51,6 @@ public class GenerateAst {
         writer.println("import java.util.List;");
         writer.println("");
         writer.println("abstract class " + baseName + " {");
-
         defineVisitor(writer, baseName, types);
 
         // The AST classes.
