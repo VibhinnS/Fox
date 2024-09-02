@@ -9,7 +9,7 @@ import java.util.List;
 public class GenerateAst {
     public static void main(String[] args) throws IOException {
         if (args.length != 1) {
-            System.err.println("Usage: generate_ast <output directory>");
+            System.err.println("Usage: generate_ast in output dir");
             System.exit(1);
         }
         String outputDir = args[0];
@@ -29,43 +29,42 @@ public class GenerateAst {
                 "Variable : Token name"
         ));
 
-        defineAst(outputDir, "Stmt", Arrays.asList(
-                "Block      : List<Stmt> statements",
-                "Class      : Token name, Expr superclass, List<Stmt.Function> methods",
-                "Expression : Expr expression",
-                "Function   : Token name, List<Token> parameters, List<Stmt> body",
-                "If         : Expr condition, Stmt thenBranch, Stmt elseBranch",
-                "Print      : Expr expression",
-                "Return     : Token keyword, Expr value",
-                "Var        : Token name, Expr initializer",
-                "While      : Expr condition, Stmt body"
-        ));
+        // defineAst(outputDir, "Stmt", Arrays.asList(
+        //         "Block      : List<Stmt> statements",
+        //         "Class      : Token name, Expr superclass, List<Stmt.Function> methods",
+        //         "Expression : Expr expression",
+        //         "Function   : Token name, List<Token> parameters, List<Stmt> body",
+        //         "If         : Expr condition, Stmt thenBranch, Stmt elseBranch",
+        //         "Print      : Expr expression",
+        //         "Return     : Token keyword, Expr value",
+        //         "Var        : Token name, Expr initializer",
+        //         "While      : Expr condition, Stmt body"
+        // ));
     }
 
     private static void defineAst(String outputDir, String baseName, List<String> types) throws IOException {
         String path = outputDir + "/" + baseName + ".java";
-        PrintWriter writer = new PrintWriter(path, StandardCharsets.UTF_8);
-
-        writer.println("package fox;");
-        writer.println("");
-        writer.println("import java.util.List;");
-        writer.println("");
-        writer.println("abstract class " + baseName + " {");
-        defineVisitor(writer, baseName, types);
-
-        // The AST classes.
-        for (String type : types) {
-            String className = type.split(":")[0].trim();
-            String fields = type.split(":")[1].trim();
-            defineType(writer, baseName, className, fields);
+        try (PrintWriter writer = new PrintWriter(path, StandardCharsets.UTF_8)) {
+            writer.println("package fox;");
+            writer.println("");
+            writer.println("import java.util.List;");
+            writer.println("");
+            writer.println("abstract class " + baseName + " {");
+            defineVisitor(writer, baseName, types);
+            
+            // The AST classes.
+            for (String type : types) {
+                String className = type.split(":")[0].trim();
+                String fields = type.split(":")[1].trim();
+                defineType(writer, baseName, className, fields);
+            }
+            
+            // The base accept() method.
+            writer.println("");
+            writer.println("    abstract <R> R accept(Visitor<R> visitor);");
+            
+            writer.println("}");
         }
-
-        // The base accept() method.
-        writer.println("");
-        writer.println("    abstract <R> R accept(Visitor<R> visitor);");
-
-        writer.println("}");
-        writer.close();
     }
 
     private static void defineVisitor(PrintWriter writer, String baseName, List<String> types) {
@@ -100,7 +99,6 @@ public class GenerateAst {
         writer.println("            return visitor.visit" + className + baseName + "(this);");
         writer.println("        }");
 
-        // Fields.
         writer.println();
         for (String field : fields) {
             writer.println("        final " + field + ";");

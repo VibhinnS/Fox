@@ -2,7 +2,7 @@ package fox;
 
 import java.util.List;
 
-public abstract class Expr {
+abstract class Expr {
     interface Visitor<R> {
         R visitAssignExpr(Assign expr);
         R visitBinaryExpr(Binary expr);
@@ -30,8 +30,8 @@ public abstract class Expr {
         final Token name;
         final Expr value;
     }
-    public static class Binary extends Expr {
-        public Binary(Expr left, Token operator, Expr right) {
+    static class Binary extends Expr {
+        Binary(Expr left, Token operator, Expr right) {
             this.left = left;
             this.operator = operator;
             this.right = right;
@@ -41,9 +41,9 @@ public abstract class Expr {
             return visitor.visitBinaryExpr(this);
         }
 
-        public final Expr left;
-        public final Token operator;
-        public final Expr right;
+        final Expr left;
+        final Token operator;
+        final Expr right;
     }
     static class Call extends Expr {
         Call(Expr callee, Token paren, List<Expr> arguments) {
@@ -73,8 +73,8 @@ public abstract class Expr {
         final Expr object;
         final Token name;
     }
-    public static class Grouping extends Expr {
-        public Grouping(Expr expression) {
+    static class Grouping extends Expr {
+        Grouping(Expr expression) {
             this.expression = expression;
         }
 
@@ -84,8 +84,8 @@ public abstract class Expr {
 
         final Expr expression;
     }
-    public static class Literal extends Expr {
-        public Literal(Object value) {
+    static class Literal extends Expr {
+        Literal(Object value) {
             this.value = value;
         }
 
@@ -149,8 +149,8 @@ public abstract class Expr {
 
         final Token keyword;
     }
-    public static class Unary extends Expr {
-        public Unary(Token operator, Expr right) {
+    static class Unary extends Expr {
+        Unary(Token operator, Expr right) {
             this.operator = operator;
             this.right = right;
         }
@@ -159,8 +159,8 @@ public abstract class Expr {
             return visitor.visitUnaryExpr(this);
         }
 
-        public final Token operator;
-        public final Expr right;
+        final Token operator;
+        final Expr right;
     }
     static class Variable extends Expr {
         Variable(Token name) {
